@@ -11,3 +11,15 @@ class RegisterForm(UserCreationForm):
 
 class LoginForm(AuthenticationForm):
      pass
+
+class CreateUserForm(UserCreationForm):
+     email = forms.EmailField()
+     class Meta:
+          model = User
+          fields = ('username' , 'password1' , 'password2' , 'email')
+
+
+class UpdateUserForm(forms.ModelForm):
+     class Meta:
+          model = User
+          fields = ('username' , 'email')

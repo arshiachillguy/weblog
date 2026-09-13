@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update User</title>
+</head>
+<body>
+
+    <h1>Update User</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {{ form.username }}
+        
+        {{ form.email }}
+
+        <button type="submit">
+            Update
+        </button>
+    </form>
+
+    <a href="{% url 'user_detail' user.pk %}">
+        Cancel
+    </a>
+
+</body>
+</html>

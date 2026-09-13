@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ post.title }}</title>
+</head>
+
+<body>
+
+    <h1>{{ post.title }}</h1>
+
+    <p>
+        Author: {{ post.author.username }}
+    </p>
+
+    <p>
+        {{ post.content }}
+    </p>
+
+    <br>
+
+    <a href="{% url 'update_post' post.pk %}">
+        Edit
+    </a>
+
+    <a href="{% url 'delete_post' post.pk %}">
+        Delete
+    </a>
+
+    <br><br>
+
+    <a href="{% url 'all_posts' %}">
+        Back to Posts
+    </a>
+
+</body>
+</html>

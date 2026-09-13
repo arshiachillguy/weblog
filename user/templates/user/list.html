@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+     <body>
+          <h1>All Users</h1>
+
+{% for user in users %}
+    <p>
+        {{ user.username }} - {{ user.email }}
+    </p>
+{% empty %}
+    <p>No users found.</p>
+{% endfor %}
+     </body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Posts</title>
+</head>
+
+<body>
+
+    <h1>All Posts</h1>
+
+    {% for post in posts %}
+
+        <article>
+            <h2>{{ post.title }}</h2>
+
+            <p>
+                {{ post.content }}
+            </p>
+
+            <small>
+                Author: {{ post.author.username }}
+            </small>
+        </article>
+
+        <hr>
+
+    {% empty %}
+
+        <p>No posts found.</p>
+
+    {% endfor %}
+
+</body>
+</html>
+

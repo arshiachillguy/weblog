@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title style="color: green;">Welcome to weblogi ????</title>
+    <style>
+        .container {
+            text-align: center;
+            margin: 100px auto;
+            max-width: 500px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: green;
+            font-weight: bold;
+        }
+
+        img {
+            width: 60%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page heading -->
+        <h1>Welcome {{ request.user.username}} </h1>
+        
+        <!-- Animated GIF -->
+        <!-- Use "welcome.gif" as the source for the GIF -->
+        <img src="https://i.ibb.co/RNB6jpM/welcome.gif" alt="Welcome Cartoon" sizes=50>
+    </div>
+    <div>
+
+    <a href="{% url 'all_posts' %}">
+        View Posts
+    </a>
+
+    <a href="{% url 'update_user' request.user.id %}">
+        Update Profile
+    </a>
+
+    <a href="{% url 'delete_user' request.user.id %}">
+        Delete Account
+    </a>
+
+    <a href="{% url 'logout' %}">
+        Logout
+    </a>
+
+</div>
+</body>
+</html>

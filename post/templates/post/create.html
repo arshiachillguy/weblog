@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Post</title>
+</head>
+
+<body>
+
+    <h1>Create a new post</h1>
+
+    <p>Author: {{ request.user.username }}</p>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <label for="title">Title:</label>
+        {{ form.title }}
+        {{ form.title.errors }}
+
+        <br><br>
+
+        <label for="content">Content:</label>
+        {{ form.content }}
+        {{ form.content.errors }}
+
+        <br><br>
+
+        <button type="submit">Create Post</button>
+
+    </form>
+
+</body>
+</html>
+

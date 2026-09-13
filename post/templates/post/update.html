@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Post</title>
+</head>
+
+<body>
+
+    <h1>Edit Post</h1>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <label>
+            Title:
+        </label>
+
+        <br>
+
+        {{ form.title }}
+        {{ form.title.errors }}
+
+        <br><br>
+
+        <label>
+            Content:
+        </label>
+
+        <br>
+
+        {{ form.content }}
+        {{ form.content.errors }}
+
+        <br><br>
+
+        <button type="submit">
+            Update Post
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="{% url 'all_posts' %}">
+        Cancel
+    </a>
+
+</body>
+</html>

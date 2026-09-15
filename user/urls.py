@@ -26,4 +26,7 @@ urlpatterns = [
      
      path('api/users/',views.user_list_create_api, name='user_list_create_api'),
      path('api/users/<int:pk>/',views.user_detail_api,name='user_detail_api'),
+
+
+     path('api/profile/',views.profile_api,name='profile_api')
 ]

@@ -10,7 +10,8 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import UserSerializer
+from .serializers import UserSerializer ,ProfileSerializer
+from rest_framework.permissions import IsAuthenticated
 
 #----AUTHENTICATION
 def register_page(request):
@@ -196,3 +197,15 @@ def user_detail_api(request, pk):
         user_obj.delete()
 
         return Response({"message": "User deleted successfully"})
+
+#gathering data for profile api 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def profile_api(request):
+
+     user_obj = request.user
+     
+     serializer = ProfileSerializer(user_obj)
+     
+     return Response(serializer.data)
+

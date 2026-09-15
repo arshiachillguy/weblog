@@ -8,6 +8,9 @@ from django.contrib.admin.views.decorators import staff_member_required
 from .forms import RegisterForm , LoginForm , CreateUserForm , UpdateUserForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .serializers import UserSerializer
 
 #----AUTHENTICATION
 def register_page(request):
@@ -101,3 +104,95 @@ def changePassword(request):
           update_session_auth_hash(request, user)
           return redirect('home')
      return render(request , 'user/change_password.html' , {'form':form})     
+
+
+
+@api_view(['GET', 'POST'])
+def user_list_create_api(request):
+          
+     if request.method == "GET":
+          users = User.objects.all()
+
+          serializer = UserSerializer(users, many=True)
+          
+          return Response(serializer.data)
+
+     elif request.method == "POST":
+          serializer = UserSerializer(data=request.data)
+
+          if serializer.is_valid():
+               serializer.save()
+               return Response(serializer.data , status=201)
+
+     return Response(serializer.errors , status=400)
+
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
+from django.contrib.auth.models import User
+
+from .serializers import UserSerializer
+
+
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
+@permission_classes([IsAuthenticatedOrReadOnly])
+def user_detail_api(request, pk):
+
+    user_obj = get_object_or_404(User, pk=pk)
+
+    # Read user
+    if request.method == 'GET':
+
+        serializer = UserSerializer(user_obj)
+
+        return Response(serializer.data)
+
+    # Update full user
+    elif request.method == 'PUT':
+
+        if user_obj != request.user:
+            return Response(
+                {"detail": "You do not have permission to edit this user."},
+                status=403
+            )
+
+        serializer = UserSerializer(user_obj,data=request.data)
+
+        if serializer.is_valid():
+
+          erializer.save()
+
+          return Response(serializer.data)
+
+        return Response(serializer.errors, status=400)
+
+    # Update partial user
+    elif request.method == 'PATCH':
+
+        if user_obj != request.user:
+            return Response(
+                {"detail": "You do not have permission to edit this user."},
+                status=403)
+
+        serializer = UserSerializer(user_obj,data=request.data,partial=True)
+
+        if serializer.is_valid():
+
+            serializer.save()
+
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=400)
+
+    # Delete user
+    elif request.method == 'DELETE':
+
+        if user_obj != request.user:
+            return Response(
+                {"detail": "You do not have permission to delete this user."},
+                status=403)
+
+        user_obj.delete()
+
+        return Response({"message": "User deleted successfully"})

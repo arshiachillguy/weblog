@@ -20,5 +20,10 @@ urlpatterns = [
      
      #JWT API 
      path('api/token/',TokenObtainPairView.as_view(),name='token_obtain_pair'),
-     path('api/token/refresh/',TokenRefreshView.as_view(),name='token_refresh')
+     path('api/token/refresh/',TokenRefreshView.as_view(),name='token_refresh'),
+
+     # main API
+     
+     path('api/users/',views.user_list_create_api, name='user_list_create_api'),
+     path('api/users/<int:pk>/',views.user_detail_api,name='user_detail_api'),
 ]

@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from .serializers import PostSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
-
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 # Create New post
 @login_required
@@ -56,82 +56,74 @@ def delete_post(request, pk):
 
      return render(request,'post/delete.html',{'post':post_obj})
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def post_create_api(request):
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticatedOrReadOnly])
+def post_list_create_api(request):
+    # if the req has GET method api shows the list of posts
+    if request.method == 'GET':
+        posts = post.objects.all()
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)
 
-     serializer = PostSerializer(data=request.data)
+    # if the req has POST method - api send the content to create new post 
+    if request.method == 'POST':
+        serializer = PostSerializer(data=request.data)
 
-     if serializer.is_valid():
-          #jwt know who is this user !
-          serializer.save(author=request.user)
+        if serializer.is_valid():
+            serializer.save(author=request.user)
+            return Response(serializer.data, status=201)
 
-          return Response(serializer.data)
+        return Response(serializer.errors, status=400)
 
-@api_view(['GET'])
-def post_list_api(request):
-
-     posts = post.objects.all()
-     serializer = PostSerializer(posts , many=True)
-
-     return Response(serializer.data)
-
-@api_view(['GET'])
+@api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
+@permission_classes([IsAuthenticatedOrReadOnly])
 def post_detail_api(request, pk):
 
-    post_obj = get_object_or_404(post , pk=pk)
-
-    serializer = PostSerializer(post_obj)
-
-    return Response(serializer.data)
-# use put for changing all data of post 
-@api_view(['PUT'])
-@permission_classes([IsAuthenticated])
-def post_update_api(request, pk):
-
     post_obj = get_object_or_404(post, pk=pk)
 
-    if post_obj.author != request.user:
-        return Response(
-         {"detail": "You do not have permission to edit this post."},
-         status=403
-     )
+    if request.method == 'GET':
 
-    serializer = PostSerializer( post_obj , data=request.data)
+          serializer = PostSerializer(post_obj)
+          return Response(serializer.data)
 
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-# use patch for chaning just fileds you want 
-@api_view(['PATCH'])
-@permission_classes([IsAuthenticated])
-def post_partial_update_api(request, pk):
+    elif request.method == 'PUT':
 
-    post_obj = get_object_or_404(post, pk=pk)
+          if post_obj.author != request.user:
+               return Response(
+                    {"detail": "You do not have permission to edit this post."},
+                    status=403
+               )
 
-    if post_obj.author != request.user:
-        return Response({"detail": "You do not have permission to edit this post."},status=403)
+          serializer = PostSerializer( post_obj , data=request.data)
 
-    serializer = PostSerializer(post_obj,data=request.data,partial=True)
+          if serializer.is_valid():
+               serializer.save()
+               return Response(serializer.data)
+          
+          return Response(serializer.errors, status=400)
 
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
+    elif request.method == 'PATCH':
 
-    return Response(serializer.errors, status=400)
+          if post_obj.author != request.user:
+               return Response({"detail": "You do not have permission to edit this post."},status=403)
 
-@api_view(['DELETE'])
-@permission_classes([IsAuthenticated])
-def post_delete_api(request, pk):
+          serializer = PostSerializer(post_obj,data=request.data,partial=True)
 
-    post_obj = get_object_or_404(post, pk=pk)
+          if serializer.is_valid():
+               serializer.save()
+               return Response(serializer.data)
 
-    if post_obj.author != request.user:
-        return Response(
-            {"detail": "You do not have permission to delete this post."},
-            status=403
-        )
+          return Response(serializer.errors, status=400)
 
-    post_obj.delete()
 
-    return Response({"message": "Post deleted successfully"})
+    elif request.method == 'DELETE':
+        
+          if post_obj.author != request.user:
+               return Response(
+               {"detail": "You do not have permission to delete this post."},
+                    status=403
+               )
+
+          post_obj.delete()
+
+          return Response({"message": "Post deleted successfully"})

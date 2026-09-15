@@ -11,11 +11,7 @@ urlpatterns = [
      path('<int:pk>/delete/',views.delete_post,name='delete_post'),
      
      # API 
-     path('api/posts/',views.post_list_api,name='post_list_api'),
-     path('api/posts/<int:pk>/',views.post_detail_api,name='post_detail_api'),
-     path('api/posts/create/',views.post_create_api,name='post_create_api'),
-     path('api/posts/<int:pk>/update/',views.post_update_api,name='post_update_api'),
-     path('api/posts/<int:pk>/partial-update/',views.post_partial_update_api,name='post_partial_update_api'),
-     path('api/posts/<int:pk>/delete/',views.post_delete_api,name='post_delete_api'),
+     path('api/posts/',views.post_list_create_api , name='post_list_create_api'),
+     path('api/posts/<int:pk>/', views.post_detail_api, name='post_detail_api'),
      
 ]

@@ -62,6 +62,9 @@ def post_list_create_api(request):
     # if the req has GET method api shows the list of posts
     if request.method == 'GET':
         posts = post.objects.all()
+        author_filter = request.query_params.get('author')
+        if author_filter:
+            posts = posts.filter(author__username=author_filter)
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
 

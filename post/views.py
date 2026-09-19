@@ -1,13 +1,13 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import post
 from django.contrib.auth.decorators import login_required
-from .forms import InputForm
-from rest_framework.decorators import api_view
+from django.shortcuts import get_object_or_404, redirect, render
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+
+from .forms import InputForm
+from .models import post
 from .serializers import PostSerializer
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import permission_classes
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
 
 # Create New post
 @login_required
@@ -62,6 +62,7 @@ def post_list_create_api(request):
     # if the req has GET method api shows the list of posts
     if request.method == 'GET':
         posts = post.objects.all()
+        # for getting post author 
         author_filter = request.query_params.get('author')
         if author_filter:
             posts = posts.filter(author__username=author_filter)
